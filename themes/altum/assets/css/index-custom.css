@@ -1,0 +1,290 @@
+/* Index */
+.index-icon-container {
+    background: var(--primary-50);
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    min-height: 35px;
+    color: var(--primary);
+    font-size: .8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .3s ease-in-out;
+    border-radius: var(--border-radius);
+    font-weight: 800;
+}
+
+[data-theme-style="dark"] .index-icon-container {
+    background: var(--gray-100);
+}
+
+/* index */
+.index-stats-card {
+    color: #312689;
+    transition: filter .3s ease-in-out;
+}
+
+[data-theme-style="dark"] .index-stats-card {
+    background-position: 0 -20%;
+    background-size: 185%;
+}
+
+.index-stats-card span:not(.h3) {
+    color: white !important;
+    font-weight: 600;
+    font-size: 1.8rem;
+}
+
+.index-stats-card:hover {
+    filter: saturate(0.25) brightness(110%);
+}
+
+.index-background {
+    background: linear-gradient(var(--body-bg) 0%, transparent 15%, transparent 85%, var(--body-bg) 100%), url('../images/index/hero-background.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+[data-theme-style="dark"] .index-background {
+    background: linear-gradient(var(--body-bg) 0%, transparent 15%, transparent 85%, var(--body-bg) 100%), url('../images/index/hero-background.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.index-background::before {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    left: -125px;
+    top: -100px;
+    filter: blur(100px);
+    border-radius: 30%;
+    background: #cc1d912b;
+    z-index: 0;
+    transition: background .3s;
+}
+
+.index-background::after {
+    content: '';
+    position: fixed;
+    pointer-events: none;
+    width: 500px;
+    height: 500px;
+    right: 0;
+    transform: translateX(125px);
+    filter: blur(100px);
+    border-radius: 25%;
+    top: 200px;
+    background: rgba(0, 0, 255, 0.18);
+    z-index: 0;
+    overflow: hidden;
+}
+
+.index-header {
+    font-size: 3.75rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.index-subheader {
+    font-size: 1.45rem;
+    color: var(--gray-700);
+}
+
+.index-button {
+    padding: 0.8rem 4rem;
+    font-size: 1.15rem;
+    border-radius: .6rem;
+}
+
+.index-fade {
+    position: absolute;
+    background: linear-gradient(0deg, var(--white), hsla(0, 0%, 100%, 0)) !important;
+    bottom: 0;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* Index testimonial */
+.index-testimonial-avatar {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    transform: translateY(-70%);
+    border: 4px solid var(--white);
+    position: absolute;
+    left: 50%;
+    margin-left: -52px;
+}
+
+.index-testimonial-comment {
+    margin-left: 18px;
+}
+
+/* Index FAQ */
+.index-faq svg {
+    transition: all .15s;
+    color: var(--primary-800);
+}
+
+/* Timeline */
+.index-timeline {
+    position: relative;
+}
+
+.index-timeline::before {
+    content: '';
+    position: absolute;
+    border-left: 2px solid var(--gray-200);
+    height: 100%;
+    left: calc(57px / 2);
+}
+
+/* Index call to action */
+.index-cta {
+    position: relative;
+    overflow: hidden;
+    color: white;
+}
+
+.index-cta a.btn {
+    padding: 1.2rem 4.2rem;
+    font-size: 1.25rem;
+}
+
+.index-cta a.btn:hover {
+    border-color: var(--primary);
+}
+
+@keyframes blob-animation {
+    0% {
+        transform: scale(1) translateY(10%);
+    }
+    50% {
+        transform: scale(1.1) translateY(-10%);
+    }
+    100% {
+        transform: scale(0.85) translateY(5%);
+    }
+}
+
+.index-cta-blob {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    mix-blend-mode: multiply;
+    filter: blur(45px);
+    transform: scale(1) translateY(10%);
+    animation: blob-animation 4s infinite alternate;
+    transition: .3s all;
+}
+
+.index-cta:hover .index-cta-blob {
+    filter: blur(50px) saturate(150%);
+    transform: scale(1.15) translateY(10%);
+}
+
+[data-theme-style="dark"] .index-cta-blob {
+    mix-blend-mode: hard-light;
+}
+
+.index-cta-blob-one {
+    bottom: -5%;
+    left: -10%;
+    background: #feb0b0;
+    animation-delay: 1s;
+}
+
+.index-cta-blob-two {
+    bottom: -5%;
+    left: 5%;
+    background: #feb0e0;
+}
+
+.index-cta-blob-three {
+    bottom: -5%;
+    left: 20%;
+    background: #b0bbfe;
+    animation-delay: 3s;
+}
+
+/* index header */
+.index-hero-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.index-hero-wrapper:hover .index-hero-gradient {
+    filter: blur(35px) saturate(120%);
+    opacity: 0.8;
+}
+
+.index-hero-gradient {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    z-index: 0;
+    filter: blur(30px) saturate(105%);
+    opacity: 0.45;
+    overflow: hidden;
+    transition: .3s all;
+}
+
+[data-theme-style="dark"] .index-hero-gradient {
+    opacity: 0.3;
+    filter: blur(30px) saturate(95%);
+}
+
+.index-hero-gradient::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: conic-gradient(
+            from 0deg,
+            deeppink,
+            purple,
+            blue,
+            cyan,
+            lime,
+            yellow,
+            orange,
+            deeppink
+    );
+    animation: index_hero_gradient_animation 10s linear infinite alternate;
+}
+
+@keyframes index_hero_gradient_animation {
+    to {
+        transform: rotate(360deg) scale(1.1);
+    }
+}
+
+.index-hero-image {
+    z-index: 1;
+}
+
+/* hide until words are wrapped to avoid flash */
+.reveal-effect { visibility: hidden; }
+
+/* base state for each word */
+.reveal-effect-prepared .reveal-effect-word {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translate3d(0, 8px, 0);
+    display: inline-block;
+    transition: opacity .5s ease, filter .5s ease, transform .5s ease;
+}
+
+/* animate in when container gets .reveal-effect-in */
+.reveal-effect-prepared.reveal-effect-in .reveal-effect-word {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+}

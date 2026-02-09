@@ -1,0 +1,29 @@
+# Config files with sensitive data
+config.php
+
+# Uploads directory
+uploads/*
+!uploads/.gitkeep
+
+# Cache and logs
+uploads/cache/*
+uploads/logs/*
+
+# Composer
+vendor/
+composer.lock
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.bak
+*.log
