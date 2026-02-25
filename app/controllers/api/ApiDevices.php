@@ -95,8 +95,8 @@ class ApiDevices extends Controller {
 
             /* Prepare the data */
             $row = [
-                'id' => (int) $row->device_id,
-                'device_id' => (int) $row->device_id,
+                'id' => (int) $row->device_id ,
+                'device_code' => $row->device_code,
                 'user_id' => (int) $row->user_id,
                 'name' => $row->name,
                 'notifications' => json_decode($row->notifications ?? ''),
@@ -162,6 +162,7 @@ class ApiDevices extends Controller {
         /* Prepare the data */
         $data = [
             'id' => (int) $device->device_id ,
+            'device_code' => $device->device_code,
             'user_id' => (int) $device->user_id,
             'name' => $device->name,
             'notifications' => json_decode($device->notifications ?? ''),
@@ -250,6 +251,7 @@ class ApiDevices extends Controller {
         /* Prepare the data */
         $data = [
             'id' => (int) $device_id,
+            'device_code' => $device_code,
             'user_id' => (int) $this->api_user->user_id,
             'name' => $_POST['name'],
             'notifications' => $_POST['notifications'],
