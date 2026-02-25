@@ -24,39 +24,35 @@
     <div class="card">
         <div class="card-body">
 
-            <form action="" method="post" role="form">
-                <input type="hidden" name="token" value="<?= \Altum\Csrf::get() ?>" />
+            <div <?= $this->user->plan_settings->api_is_enabled ? null : get_plan_feature_disabled_info() ?>>
+                <div class="form-group <?= $this->user->plan_settings->api_is_enabled ? null : 'container-disabled' ?>">
+                    <label for="api_key"><i class="fas fa-fw fa-sm fa-code text-muted mr-1"></i> <?= l('account_api.api_key') ?></label>
+                    <div class="input-group">
+                        <?php
+                        //ALTUMCODE:DEMO if(DEMO) if($this->user->user_id == 1) $this->user->api_key = 'hidden on demo';
+                        ?>
 
-                <div <?= $this->user->plan_settings->api_is_enabled ? null : get_plan_feature_disabled_info() ?>>
-                    <div class="form-group <?= $this->user->plan_settings->api_is_enabled ? null : 'container-disabled' ?>">
-                        <label for="api_key"><i class="fas fa-fw fa-sm fa-code text-muted mr-1"></i> <?= l('account_api.api_key') ?></label>
-                        <div class="input-group">
-                            <?php
-                            //ALTUMCODE:DEMO if(DEMO) if($this->user->user_id == 1) $this->user->api_key = 'hidden on demo';
-                            ?>
-
-                            <input type="text" id="api_key" name="api_key" value="<?= $this->user->api_key ?>" class="form-control" onclick="this.select();" readonly="readonly" />
-                            <div class="input-group-append">
-                                <button
-                                        id="url_copy"
-                                        type="button"
-                                        class="btn btn-light border border-left-0"
-                                        data-toggle="tooltip"
-                                        title="<?= l('global.clipboard_copy') ?>"
-                                        aria-label="<?= l('global.clipboard_copy') ?>"
-                                        data-copy="<?= l('global.clipboard_copy') ?>"
-                                        data-copied="<?= l('global.clipboard_copied') ?>"
-                                        data-clipboard-text="<?= $this->user->api_key ?>"
-                                >
-                                    <i class="fas fa-fw fa-sm fa-copy"></i>
-                                </button>
-                            </div>
+                        <input type="text" id="api_key" name="api_key" value="<?= $this->user->api_key ?>" class="form-control" onclick="this.select();" readonly="readonly" />
+                        <div class="input-group-append">
+                            <button
+                                    id="url_copy"
+                                    type="button"
+                                    class="btn btn-light border border-left-0"
+                                    data-toggle="tooltip"
+                                    title="<?= l('global.clipboard_copy') ?>"
+                                    aria-label="<?= l('global.clipboard_copy') ?>"
+                                    data-copy="<?= l('global.clipboard_copy') ?>"
+                                    data-copied="<?= l('global.clipboard_copied') ?>"
+                                    data-clipboard-text="<?= $this->user->api_key ?>"
+                            >
+                                <i class="fas fa-fw fa-sm fa-copy"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <button type="submit" name="submit" class="btn btn-block btn-outline-secondary" <?= $this->user->plan_settings->api_is_enabled ? null : get_plan_feature_disabled_info() ?>><?= l('account_api.button') ?></button>
-            </form>
+            <button type="button" class="btn btn-block btn-outline-secondary" data-toggle="modal" data-target="#regenerate_api_key_modal" <?= $this->user->plan_settings->api_is_enabled ? null : get_plan_feature_disabled_info() ?>><?= l('account_api.button') ?></button>
 
         </div>
     </div>
@@ -290,5 +286,7 @@
         </div>
     </div>
 </div>
+
+<?php require THEME_PATH . 'views/account-api/regenerate_api_key_modal.php' ?>
 
 <?php include_view(THEME_PATH . 'views/partials/clipboard_js.php') ?>

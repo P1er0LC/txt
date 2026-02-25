@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="device_connect_device_id"><?= l('device_connect_modal.device_id') ?></label>
+                    <label for="device_connect_device_id"><?= l('device_connect_modal.device_code') ?></label>
                     <input id="device_connect_device_id" type="text" name="device_connect_device_id" class="form-control font-weight-bold text-center" style="font-size: 1.5rem; letter-spacing: 0.2rem;" value="" readonly="readonly" onclick="this.select();" />
                 </div>
 

@@ -843,6 +843,10 @@ return [
     'account_api.subheader' => 'Do not share your API key with unauthorized people.',
     'account_api.api_key' => 'API Key',
     'account_api.button' => 'Regenerate API Key',
+    'account_api.confirm' => 'Are you sure you want to regenerate your API key? This will invalidate your current API key and any applications using it will stop working.',
+    'account_api.regenerate_modal.header' => '¿Regenerar API Key?',
+    'account_api.regenerate_modal.subheader' => '¿Estás seguro de que deseas regenerar tu clave API? Esto invalidará tu clave API actual y cualquier aplicación que la esté usando dejará de funcionar.',
+    'account_api.regenerate_modal.regenerate' => 'Sí, regenerar',
     'account_api.success_message' => 'Your API key was regenerated successfully.',
 
 
@@ -1470,6 +1474,7 @@ return [
     'devices.sms_status_notifications' => 'SMS status notifications',
     'devices.sms_status_notifications_help' => 'Get notified of SMS status updates (sent, failed) via webhooks.',
     'devices.device_id' => 'Device ID',
+    'devices.device_code' => 'Device Code',
     'devices.advanced' => 'Advanced',
     'devices.sms_in_between_delay' => 'SMS in-between sending delay',
     'devices.sms_in_between_delay_help' => 'Time to wait before sending the next SMS.',
@@ -1500,6 +1505,7 @@ return [
     'device_connect_modal.second.subheader' => 'Fill the form with the following details:',
     'device_connect_modal.second.finish' => 'If you get a successful message, your device is now connected.',
     'device_connect_modal.device_id' => 'Device ID',
+    'device_connect_modal.device_code' => 'Device Code',
     'device_connect_modal.api_key' => 'API key',
     'device_connect_modal.site_url' => 'Site URL',
 

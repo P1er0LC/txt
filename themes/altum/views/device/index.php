@@ -39,7 +39,7 @@
                 </small>
             </div>
 
-            <?= include_view(THEME_PATH . 'views/devices/device_dropdown_button.php', ['id' => $data->device->device_id, 'resource_name' => $data->device->name, 'is_connected' => $data->device->last_ping_datetime]) ?>
+            <?= include_view(THEME_PATH . 'views/devices/device_dropdown_button.php', ['id' => $data->device->device_id, 'device' => $data->device, 'resource_name' => $data->device->name, 'is_connected' => $data->device->last_ping_datetime]) ?>
         </div>
     </div>
 
@@ -353,7 +353,7 @@
         </div>
 
         <div class="row">
-            <div class="col-12 p-3 text-truncate">
+            <div class="col-12 col-lg-6 p-3 text-truncate">
                 <div class="card d-flex flex-row h-100 overflow-hidden">
                     <div class="pl-3 d-flex flex-column justify-content-center">
                         <div class="p-2 rounded-2x index-widget-icon d-flex align-items-center justify-content-center bg-gray-100">
@@ -376,6 +376,36 @@
                                 data-copy="<?= l('global.clipboard_copy') ?>"
                                 data-copied="<?= l('global.clipboard_copied') ?>"
                                 data-clipboard-text="<?= $data->device->device_id ?>"
+                        >
+                            <i class="fas fa-fw fa-sm fa-copy text-muted"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6 p-3 text-truncate">
+                <div class="card d-flex flex-row h-100 overflow-hidden">
+                    <div class="pl-3 d-flex flex-column justify-content-center">
+                        <div class="p-2 rounded-2x index-widget-icon d-flex align-items-center justify-content-center bg-primary-100">
+                            <i class="fas fa-fw fa-sm fa-qrcode text-primary"></i>
+                        </div>
+                    </div>
+
+                    <div class="card-body text-truncate">
+                        <div class="font-weight-bold text-muted small"><?= l('devices.device_code') ?></div>
+                        <span class="font-weight-bold text-primary" style="font-size: 1.2rem; letter-spacing: 0.1rem;"><?= $data->device->device_code ?></span>
+                    </div>
+
+                    <div class="pr-3 d-flex flex-column justify-content-center">
+                        <button
+                                type="button"
+                                class="btn btn-light p-2 rounded-2x index-widget-icon d-flex align-items-center justify-content-center"
+                                data-toggle="tooltip"
+                                title="<?= l('global.clipboard_copy') ?>"
+                                aria-label="<?= l('global.clipboard_copy') ?>"
+                                data-copy="<?= l('global.clipboard_copy') ?>"
+                                data-copied="<?= l('global.clipboard_copied') ?>"
+                                data-clipboard-text="<?= $data->device->device_code ?>"
                         >
                             <i class="fas fa-fw fa-sm fa-copy text-muted"></i>
                         </button>

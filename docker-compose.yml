@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: txt_web
+    volumes:
+      - ./:/var/www/html:rw
+    networks:
+      - txt_net
+      - traefik_public
+    depends_on:
+      - db
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.txt-http.rule=Host(`txt.buho.xyz`)"
+      - "traefik.http.routers.txt-http.entrypoints=web"
+      - "traefik.http.routers.txt-http.service=txt"
+      - "traefik.http.routers.txt.rule=Host(`txt.buho.xyz`)"
+      - "traefik.http.routers.txt.entrypoints=websecure"
+      - "traefik.http.routers.txt.tls.certresolver=le"
+      - "traefik.http.routers.txt.service=txt"
+      - "traefik.http.services.txt.loadbalancer.server.port=80"
+      - "traefik.docker.network=traefik_public"
+
+  db:
+    image: mysql:5.7
+    container_name: txt_db
+    environment:
+      MYSQL_ROOT_PASSWORD: txt_R00t_P@ssw0rd_2026!
+      MYSQL_DATABASE: txt_db
+      MYSQL_USER: txt_user
+      MYSQL_PASSWORD: txt_Us3r_P@ssw0rd_2026!
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - txt_net
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: txt_phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: txt_R00t_P@ssw0rd_2026!
+      UPLOAD_LIMIT: 100M
+    networks:
+      - txt_net
+      - traefik_public
+    depends_on:
+      - db
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.txt-pma.rule=Host(`pma-txt.buho.xyz`)"
+      - "traefik.http.routers.txt-pma.entrypoints=websecure"
+      - "traefik.http.routers.txt-pma.tls.certresolver=le"
+      - "traefik.http.services.txt-pma.loadbalancer.server.port=80"
+      - "traefik.docker.network=traefik_public"
+
+networks:
+  txt_net:
+    driver: bridge
+  traefik_public:
+    external: true
+
+volumes:
+  db_data:
