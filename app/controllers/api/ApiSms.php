@@ -500,20 +500,33 @@ class ApiSms extends Controller {
             'last_received_datetime' => get_date(),
         ]);
 
-        /* Processing the notification handlers */
+        /* 🚀 WEBHOOK GLOBAL A CHATWOOT - Siempre se dispara para TODOS los SMS recibidos */
+        $chatwoot_webhook_url = 'https://chat.buho.la/webhooks/buhotext';
+        
+        $notification_data = [
+            'device_id'            => $device->device_id,
+            'contact_id'           => $contact_id,
+            'phone_number'         => $_POST['phone_number'],
+            'message'              => $_POST['content'],
+            'content'              => $_POST['content'],
+            'sim_subscription_id'  => $_POST['sim_subscription_id'],
+            'sms_id'               => $sms_id,
+            'device_name'          => $device->name,
+            'datetime'             => get_date(),
+            'url'                  => url('contact-view/' . $contact_id),
+        ];
+        
+        /* Enviar webhook a Chatwoot (sin esperar respuesta) */
+        fire_and_forget('post', $chatwoot_webhook_url, $notification_data);
+
+        /* Processing the notification handlers (opcional - para otros tipos de notificaciones) */
         if(count($device->notifications ?? [])) {
             $user = (new \Altum\Models\User())->get_user_by_user_id($device->user_id);
 
             /* Fetch user-level notification handlers */
             $notification_handlers = (new \Altum\Models\NotificationHandlers())->get_notification_handlers_by_user_id($device->user_id);
 
-            /* Core data to be sent to the new processor */
-            $notification_data = [
-                'device_id'         => $device->device_id,
-                'contact_id'        => $contact_id,
-                'phone_number'      => $_POST['phone_number'],
-                'url'               => url('contact-view/' . $contact_id),
-            ];
+            /* Core data to be sent to the new processor (reutilizamos $notification_data definida arriba) */
 
             /* Build a plain caught-data string for the generic message */
             $dynamic_message_data = \Altum\NotificationHandlers::build_dynamic_message_data($notification_data);
