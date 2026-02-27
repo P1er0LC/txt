@@ -465,6 +465,11 @@ class ApiSms extends Controller {
                 'datetime' => get_date(),
             ]);
 
+            /* Si el insert falló (phone_number ya existe de otro usuario), usar null */
+            if(!$contact_id) {
+                $contact_id = null;
+            }
+
         } else {
             $contact_id = $contact->contact_id;
 
