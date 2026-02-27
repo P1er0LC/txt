@@ -437,10 +437,10 @@ class ApiSms extends Controller {
         }
 
         /* Get data about the contact or create a new one */
-        $contact = (new \Altum\Models\Contacts())->get_contact_by_phone_number($_POST['phone_number']);
+        $contact = (new \Altum\Models\Contacts())->get_contact_by_phone_number($_POST['phone_number'], $this->api_user->user_id);
 
         /* Create contact */
-        if(!$contact || $contact->user_id != $this->api_user->user_id) {
+        if(!$contact) {
 
             $country_code = null;
             try {
@@ -464,11 +464,6 @@ class ApiSms extends Controller {
                 'last_received_datetime' => get_date(),
                 'datetime' => get_date(),
             ]);
-
-            /* Si el insert falló (phone_number ya existe de otro usuario), usar null */
-            if(!$contact_id) {
-                $contact_id = null;
-            }
 
         } else {
             $contact_id = $contact->contact_id;

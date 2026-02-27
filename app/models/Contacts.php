@@ -20,16 +20,21 @@ defined('ALTUMCODE') || die();
 
 class Contacts extends Model {
 
-    public function get_contact_by_phone_number($phone_number) {
+    public function get_contact_by_phone_number($phone_number, $user_id = null) {
 
         /* Try to check if the store posts exists via the cache */
-        $cache_instance = cache()->getItem('contact?phone_number=' . md5($phone_number));
+        $cache_key = 'contact?phone_number=' . md5($phone_number) . ($user_id ? '&user_id=' . $user_id : '');
+        $cache_instance = cache()->getItem($cache_key);
 
         /* Set cache if not existing */
         if(is_null($cache_instance->get())) {
 
             /* Get data from the database */
-            $data = db()->where('phone_number', $phone_number)->getOne('contacts');
+            $db = db()->where('phone_number', $phone_number);
+            if($user_id) {
+                $db->where('user_id', $user_id);
+            }
+            $data = $db->getOne('contacts');
 
             if($data) {
                 /* Save to cache */
