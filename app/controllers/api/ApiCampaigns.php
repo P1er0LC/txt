@@ -206,20 +206,12 @@ class ApiCampaigns extends Controller {
         $_POST['content'] = normalize_sms_text(input_clean($_POST['content'], 1000));
         $_POST['device_id'] = isset($_POST['device_id']) && array_key_exists($_POST['device_id'], $devices) ? (int) $_POST['device_id'] : null;
 
-        /* Validate device_id exists */
-        if(!$_POST['device_id']) {
-            $this->response_error('Invalid device_id. Device not found or does not belong to user.', 400);
-        }
+        if($_POST['device_id']) {
+            /* Get all sim_subscription_id values */
+            $sim_subscription_id_array = array_column($devices[$_POST['device_id']]->sims, 'subscription_id');
 
-        /* Get all sim_subscription_id values */
-        $sim_subscription_id_array = array_column($devices[$_POST['device_id']]->sims, 'subscription_id');
-
-        /* Check if the provided subscription exists */
-        $_POST['sim_subscription_id'] = isset($_POST['sim_subscription_id']) && in_array($_POST['sim_subscription_id'], $sim_subscription_id_array) ? input_clean($_POST['sim_subscription_id'], 20) : null;
-        
-        /* Validate sim_subscription_id exists */
-        if($_POST['sim_subscription_id'] === null) {
-            $this->response_error('Invalid sim_subscription_id. SIM not found in device.', 400);
+            /* Check if the provided subscription exists */
+            $_POST['sim_subscription_id'] = isset($_POST['sim_subscription_id']) && in_array($_POST['sim_subscription_id'], $sim_subscription_id_array) ? input_clean($_POST['sim_subscription_id'], 20) : null;
         }
 
         /* Phone numbers */
@@ -233,14 +225,8 @@ class ApiCampaigns extends Controller {
         }
 
         /* Contacts ids */
-        $_POST['contacts_ids'] = $_POST['contacts_ids'] ?? '';
-        // Handle both string and array (multipart/form-data can send arrays)
-        if(is_array($_POST['contacts_ids'])) {
-            $_POST['contacts_ids'] = array_filter(array_map('intval', $_POST['contacts_ids']));
-        } else {
-            $_POST['contacts_ids'] = trim($_POST['contacts_ids']);
-            $_POST['contacts_ids'] = array_filter(array_map('intval', explode(',', $_POST['contacts_ids'])));
-        }
+        $_POST['contacts_ids'] = trim($_POST['contacts_ids'] ?? '');
+        $_POST['contacts_ids'] = array_filter(array_map('intval', explode(',', $_POST['contacts_ids'])));
         $_POST['contacts_ids'] = array_values(array_unique($_POST['contacts_ids']));
         $_POST['contacts_ids'] = $_POST['contacts_ids'] ?: [0];
 
@@ -294,14 +280,8 @@ class ApiCampaigns extends Controller {
             : get_date();
 
         /* Contacts ids */
-        $_POST['contacts_ids'] = $_POST['contacts_ids'] ?? '';
-        // Handle both string and array (multipart/form-data can send arrays)
-        if(is_array($_POST['contacts_ids'])) {
-            $_POST['contacts_ids'] = array_filter(array_map('intval', $_POST['contacts_ids']));
-        } else {
-            $_POST['contacts_ids'] = trim($_POST['contacts_ids']);
-            $_POST['contacts_ids'] = array_filter(array_map('intval', explode(',', $_POST['contacts_ids'])));
-        }
+        $_POST['contacts_ids'] = trim($_POST['contacts_ids'] ?? '');
+        $_POST['contacts_ids'] = array_filter(array_map('intval', explode(',', $_POST['contacts_ids'])));
         $_POST['contacts_ids'] = array_values(array_unique($_POST['contacts_ids']));
         $_POST['contacts_ids'] = $_POST['contacts_ids'] ?: [0];
 
@@ -313,7 +293,7 @@ class ApiCampaigns extends Controller {
         /* Get all the users needed */
         switch($segment_type) {
             case 'all':
-                $contacts = db()->where('user_id', $this->api_user->user_id)->where('has_opted_out', 0)->get('contacts', null, ['contact_id', 'user_id']);
+                $contacts = db()->where('user_id', $this->api_user->user_id)->get('contacts', null, ['contact_id', 'user_id']);
                 break;
 
             case 'bulk':
@@ -479,7 +459,7 @@ class ApiCampaigns extends Controller {
             'settings' => json_encode($settings),
             'contacts_ids' => json_encode($contacts_ids),
             'sent_contacts_ids' => $status == 'processing' ? json_encode($contacts_ids) : '[]',
-            'status' => $status == 'processing' ? 'sent' : $status,
+            'status' => $status,
             'total_pending_sms' => $status == 'processing' ? $contacts_count : 0,
             'scheduled_datetime' => $_POST['scheduled_datetime'],
             'datetime' => get_date(),
@@ -562,7 +542,7 @@ class ApiCampaigns extends Controller {
             'total_sent_sms' => 0,
             'total_pending_sms' => 0,
             'total_failed_sms' => 0,
-            'status' => $status == 'processing' ? 'sent' : $status,
+            'status' => $status,
             'scheduled_datetime' => $_POST['scheduled_datetime'],
             'last_sent_datetime' => null,
             'last_datetime' => null,
@@ -606,22 +586,14 @@ class ApiCampaigns extends Controller {
         /* Filter some of the variables */
         $_POST['name'] = input_clean($_POST['name'] ?? $campaign->name, 256);
         $_POST['content'] = input_clean($_POST['content'] ?? $campaign->content, 1000);
-        $_POST['device_id'] = isset($_POST['device_id']) && array_key_exists($_POST['device_id'], $devices) ? (int) $_POST['device_id'] : null;
+        $_POST['device_id'] = isset($_POST['device_id']) && array_key_exists($_POST['device_id'], $devices) ? (int) $_POST['device_id'] : $campaign->device_id;
 
-        /* Validate device_id exists */
-        if(!$_POST['device_id']) {
-            $this->response_error('Invalid device_id. Device not found or does not belong to user.', 400);
-        }
+        if($_POST['device_id']) {
+            /* Get all sim_subscription_id values */
+            $sim_subscription_id_array = array_column($devices[$_POST['device_id']]->sims, 'subscription_id');
 
-        /* Get all sim_subscription_id values */
-        $sim_subscription_id_array = array_column($devices[$_POST['device_id']]->sims, 'subscription_id');
-
-        /* Check if the provided subscription exists */
-        $_POST['sim_subscription_id'] = isset($_POST['sim_subscription_id']) && in_array($_POST['sim_subscription_id'], $sim_subscription_id_array) ? input_clean($_POST['sim_subscription_id'], 20) : null;
-        
-        /* Validate sim_subscription_id exists */
-        if($_POST['sim_subscription_id'] === null) {
-            $this->response_error('Invalid sim_subscription_id. SIM not found in device.', 400);
+            /* Check if the provided subscription exists */
+            $_POST['sim_subscription_id'] = isset($_POST['sim_subscription_id']) && in_array($_POST['sim_subscription_id'], $sim_subscription_id_array) ? input_clean($_POST['sim_subscription_id'], 20) : $campaign->sim_subscription_id;
         }
 
         /* Segment */
@@ -696,7 +668,7 @@ class ApiCampaigns extends Controller {
         /* Get all the users needed */
         switch($segment_type) {
             case 'all':
-                $contacts = db()->where('user_id', $this->api_user->user_id)->where('has_opted_out', 0)->get('contacts', null, ['contact_id', 'user_id']);
+                $contacts = db()->where('user_id', $this->api_user->user_id)->get('contacts', null, ['contact_id', 'user_id']);
                 break;
 
             case 'bulk':
@@ -872,7 +844,7 @@ class ApiCampaigns extends Controller {
                 'settings' => json_encode($settings),
                 'contacts_ids' => json_encode($contacts_ids),
                 'sent_contacts_ids' => $status == 'processing' ? json_encode($contacts_ids) : '[]',
-                'status' => $status == 'processing' ? 'sent' : $status,
+                'status' => $status,
                 'total_pending_sms' => $status == 'processing' ? $contacts_count : 0,
                 'scheduled_datetime' => $_POST['scheduled_datetime'],
                 'last_datetime' => get_date(),
@@ -956,7 +928,7 @@ class ApiCampaigns extends Controller {
             'total_sent_sms' => (int) $campaign->total_sent_sms,
             'total_pending_sms' => (int) $campaign->total_pending_sms,
             'total_failed_sms' => (int) $campaign->total_failed_sms,
-            'status' => $status == 'processing' ? 'sent' : $status,
+            'status' => $status,
             'scheduled_datetime' => $_POST['scheduled_datetime'],
             'last_sent_datetime' => $campaign->last_sent_datetime,
             'last_datetime' => get_date(),

@@ -430,7 +430,7 @@
                                     <div class="small">
                                         <span class="font-weight-bold"><?= $device->device_brand . ' ' . $device->device_model ?></span>
 
-                                        <?php $sim = array_values(array_filter($device->sims, fn($sim) => $sim->subscription_id == $row->sim_subscription_id))[0] ?? null; ?>
+                                        <?php $sim = null; if(!empty($device->sims) && is_array($device->sims)) { $sim = array_values(array_filter($device->sims, fn($s) => $s->subscription_id == $row->sim_subscription_id))[0] ?? null; } ?>
 
                                         <?php if($sim): ?>
                                             <span class="text-muted"><?= $sim->phone_number ?></span>

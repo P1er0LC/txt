@@ -202,6 +202,10 @@ class ApiSms extends Controller {
 
         $device_id = isset($this->params[1]) ? (int) $this->params[1] : null;
 
+        /* Log get_pending calls for debugging */
+        $log_file = defined('UPLOADS_PATH') ? UPLOADS_PATH . 'logs/' . date('d-M-Y') . '.log' : null;
+        if($log_file) @file_put_contents($log_file, '[' . date('d-M-Y H:i:s') . ' UTC] [GET_PENDING] device_id=' . $device_id . ' ip=' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . PHP_EOL, FILE_APPEND);
+
         /* Try to get details about the resource id */
         $device = (new \Altum\Models\Devices())->get_device_by_device_id($device_id);
 
@@ -500,9 +504,6 @@ class ApiSms extends Controller {
             'last_received_datetime' => get_date(),
         ]);
 
-        /* 🚀 WEBHOOK GLOBAL A CHATWOOT - Siempre se dispara para TODOS los SMS recibidos */
-        $chatwoot_webhook_url = 'https://chat.buho.la/webhooks/buhotext';
-        
         $notification_data = [
             'device_id'            => $device->device_id,
             'contact_id'           => $contact_id,
@@ -515,9 +516,23 @@ class ApiSms extends Controller {
             'datetime'             => get_date(),
             'url'                  => url('contact-view/' . $contact_id),
         ];
-        
-        /* Enviar webhook a Chatwoot (sin esperar respuesta) */
-        fire_and_forget('post', $chatwoot_webhook_url, $notification_data);
+
+        /* 🚀 WEBHOOK GLOBAL A CHATWOOT - Siempre se dispara para TODOS los SMS recibidos */
+        if(defined('CHATWOOT_WEBHOOK_URL') && CHATWOOT_WEBHOOK_URL) {
+            $ch = curl_init(CHATWOOT_WEBHOOK_URL);
+            curl_setopt_array($ch, [
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 10,
+                CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+                CURLOPT_POSTFIELDS => json_encode($notification_data),
+            ]);
+            $wh_body = curl_exec($ch);
+            $wh_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            $log_file = defined('UPLOADS_PATH') ? UPLOADS_PATH . 'logs/' . date('d-M-Y') . '.log' : null;
+            if($log_file) @file_put_contents($log_file, '[' . date('d-M-Y H:i:s') . ' UTC] [WEBHOOK] phone=' . ($_POST['phone_number'] ?? '?') . ' code=' . $wh_code . ' body=' . substr($wh_body, 0, 200) . PHP_EOL, FILE_APPEND);
+        }
 
         /* Processing the notification handlers (opcional - para otros tipos de notificaciones) */
         if(count($device->notifications ?? [])) {

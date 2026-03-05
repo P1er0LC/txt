@@ -92,6 +92,12 @@ function wake_device_to_send_sms($device_fcm_token) {
     $response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
+    /* Log FCM response to 66text log file */
+    $log_message = '[FCM] token=' . substr($device_fcm_token, 0, 20) . '... code=' . $response_code . ' body=' . $response_body;
+    $log_file = \Altum\Logger::$path ?? (defined('UPLOADS_PATH') ? UPLOADS_PATH . 'logs/' . date('d-M-Y') . '.log' : null);
+    if($log_file) @file_put_contents($log_file, '[' . date('d-M-Y H:i:s') . ' UTC] ' . $log_message . PHP_EOL, FILE_APPEND);
+    error_log($log_message);
+
     return [
         'response_code' => $response_code,
         'response_body' => $response_body
